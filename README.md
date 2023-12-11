@@ -1,0 +1,1 @@
+# xadrez-master-geral
