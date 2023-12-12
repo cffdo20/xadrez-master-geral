@@ -144,8 +144,67 @@ public class Tabuleiro {
 	
 	public static void avaliarEventoTabuleiro(int x, int y) {
 		if ( (pecaMarcada != null) && (x >= 0) && (x <= 7) && (y >=0) && (y <= 7) ) {
-			moverPecaMarcada(x, y);
+			if(!(avaliarReiCheck(x,y)))
+				moverPecaMarcada(x, y);
 		}
+	}
+	
+	public static boolean avaliarReiCheck(int x, int y) {
+		ArrayPecas listaTemporaria = new ArrayPecas();
+		if ( corJogadorAtual==1 ) {
+			// Verificar Rei das peças Brancas
+			for (int j = 0; j < listaBrancas.size(); j++) {
+				listaTemporaria.add(listaBrancas.get(j));
+			}
+			for(int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j).posX==pecaMarcada.posX && listaTemporaria.get(j).posX==pecaMarcada.posY) {
+					listaTemporaria.get(j).posX=x;
+					listaTemporaria.get(j).posY=y;
+					break;
+				}
+			}
+			for (int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j) instanceof Rei) {
+					if(!(listaTemporaria.posicaoLivreAtaque(listaTemporaria.get(j).posX, listaTemporaria.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+			for (int j = 0; j < listaPretas.size(); j++) {
+				if(listaPretas.get(j) instanceof Rei) {
+					if(!(listaPretas.posicaoLivreAtaque(listaPretas.get(j).posX, listaPretas.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+		}else if(corJogadorAtual==0) {
+			// Verificar Rei das peças pretas
+			for (int j = 0; j < listaPretas.size(); j++) {
+				listaTemporaria.add(listaPretas.get(j));
+			}
+			for(int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j).posX==pecaMarcada.posX && listaTemporaria.get(j).posX==pecaMarcada.posY) {
+					listaTemporaria.get(j).posX=x;
+					listaTemporaria.get(j).posY=y;
+					break;
+				}
+			}
+			for (int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j) instanceof Rei) {
+					if(!(listaTemporaria.posicaoLivreAtaque(listaTemporaria.get(j).posX, listaTemporaria.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+			for (int j = 0; j < listaBrancas.size(); j++) {
+				if(listaBrancas.get(j) instanceof Rei) {
+					if(!(listaBrancas.posicaoLivreAtaque(listaBrancas.get(j).posX, listaBrancas.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public static void marcarPeca(Peca p, IPeca ip) {
