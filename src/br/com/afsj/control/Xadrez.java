@@ -1,6 +1,5 @@
 package br.com.afsj.control;
 
-
 import br.com.afsj.model.Tabuleiro;
 import br.com.afsj.model.TradutorEspanhol;
 //import br.com.afsj.model.TradutorIngles;
