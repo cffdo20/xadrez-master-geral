@@ -41,6 +41,15 @@ public abstract class Peca {
 	}
 	public abstract boolean movimentoOK(int x, int y);
 	
+	public boolean capturarOK(int x, int y)
+	{
+		// Verifica se a peça pode capturar o que houver na casa
+		if ( this.movimentoOK(x,y) ) {
+			return true;
+		}
+		return false;
+	}
+	
 	public void remover() {
 		this.posX = -2;
 		this.posY = -2;

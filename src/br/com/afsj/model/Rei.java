@@ -25,9 +25,11 @@ public class Rei extends Peca {
     public boolean reiEmCheck(List<Peca> pecas, Rei rei) {
         // Verifica se alguma peça do oponente pode capturar o rei
         for (Peca peca : pecas) {
-            if (peca.getCor() != rei.getCor() && rei != null
-                    && peca.movimentoOK(rei.getPosX(), rei.getPosY())) {
-                return true;
+            if (peca.getCor() != rei.getCor() && rei != null)
+            {	      	
+            	if (peca.capturarOK(rei.getPosX(), rei.getPosY())) {
+                	return true;
+                }
             }
         }
 

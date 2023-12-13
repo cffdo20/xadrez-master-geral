@@ -25,6 +25,12 @@ public class Peao extends Peca {
 	}
 	
 	@Override
+	public boolean capturarOK(int x, int y)
+	{
+		return capturar(x, y);
+	}
+	
+	@Override
 	public boolean capturar(int x, int y) {
 		if (cor == Xadrez.corBRANCA) {
 			if ( (x == posX-1 || x == posX+1) && (y == posY-1) ) {
