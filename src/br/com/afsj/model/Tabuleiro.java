@@ -5,10 +5,10 @@ import javax.swing.JFrame;
 import br.com.afsj.control.Xadrez;
 import br.com.afsj.view.IBispo;
 import br.com.afsj.view.ICavalo;
-import br.com.afsj.view.IPeao;
-import br.com.afsj.view.IPeca;
 import br.com.afsj.view.IRainha;
 import br.com.afsj.view.IRei;
+import br.com.afsj.view.IPeao;
+import br.com.afsj.view.IPeca;
 import br.com.afsj.view.ITabuleiro;
 import br.com.afsj.view.ITorre;
 
@@ -108,7 +108,7 @@ public class Tabuleiro {
 	
 	protected static Torre torrePreta2 = new Torre();
 	protected static ITorre iTorrePreta2 = new ITorre(torrePreta2);
-	
+
 	protected static Rainha rainhaBranca1 = new Rainha();
 	protected static IRainha iRainhaBranca1 = new IRainha(rainhaBranca1);
 	
@@ -120,7 +120,6 @@ public class Tabuleiro {
 	
 	protected static Rei reiPreto1 = new Rei();
 	protected static IRei iReiPreto1 = new IRei(reiPreto1);
-	
 	//protected static Peca peca = new Peca();
 
 	public void iniciar(Tradutor t) {
@@ -255,7 +254,6 @@ public class Tabuleiro {
 		iRainhaBranca1.mover(4, 7);
 		TELA.getContentPane().add(iRainhaBranca1.getImagem());
 		listaBrancas.add(rainhaBranca1);
-		
 		// Pretas
 		peaoPreto1.setCor(Xadrez.corPRETA);
 		peaoPreto1.mover(0, 1);
@@ -263,8 +261,8 @@ public class Tabuleiro {
 		iPeaoPreto1.setIconeMarrom(new ImageIcon("imagens/Peao-Pretas-Marrom.png"));
 		iPeaoPreto1.mover(0, 1);
 		TELA.getContentPane().add(iPeaoPreto1.getImagem());
+    
 		listaPretas.add(peaoPreto1);
-		
 		peaoPreto2.setCor(Xadrez.corPRETA);
 		peaoPreto2.mover(1, 1);
 		iPeaoPreto2.setIconeBranco(new ImageIcon("imagens/Peao-Pretas-Branco.png"));
@@ -321,6 +319,7 @@ public class Tabuleiro {
 		TELA.getContentPane().add(iPeaoPreto8.getImagem());
 		listaPretas.add(peaoPreto8);
 
+
 		cavaloPreto1.setCor(Xadrez.corPRETA);
 		cavaloPreto1.mover(1, 0);
 		iCavaloPreto1.setIconeBranco(new ImageIcon("imagens/Cavalo-Pretas-Branco.png"));
@@ -352,7 +351,7 @@ public class Tabuleiro {
 		iBispoPreto2.mover(5, 0);
 		TELA.getContentPane().add(iBispoPreto2.getImagem());
 		listaPretas.add(bispoPreto2);
-		
+
 		torrePreta1.setCor(Xadrez.corPRETA);
 		torrePreta1.mover(0, 0);
 		iTorrePreta1.setIconeBranco(new ImageIcon("imagens/Torre-Pretas-Branco.png"));
@@ -360,7 +359,7 @@ public class Tabuleiro {
 		iTorrePreta1.mover(0, 0);
 		TELA.getContentPane().add(iTorrePreta1.getImagem());
 		listaPretas.add(torrePreta1);
-		
+
 		torrePreta2.setCor(Xadrez.corPRETA);
 		torrePreta2.mover(7, 0);
 		iTorrePreta2.setIconeBranco(new ImageIcon("imagens/Torre-Pretas-Branco.png"));
@@ -384,7 +383,7 @@ public class Tabuleiro {
 		iReiPreto1.mover(3, 0);
 		TELA.getContentPane().add(iReiPreto1.getImagem());
 		listaPretas.add(reiPreto1);
-		
+
 		TELA.getContentPane().add(iTabuleiro.getImagem());
 		TELA.setSize(400, 400);
 		TELA.setVisible(true);
@@ -400,16 +399,75 @@ public class Tabuleiro {
 	
 	public static void avaliarEventoTabuleiro(int x, int y) {
 		if ( (pecaMarcada != null) && (x >= 0) && (x <= 7) && (y >=0) && (y <= 7) ) {
-			moverPecaMarcada(x, y);
+			if(!(avaliarReiCheck(x,y)))
+				moverPecaMarcada(x, y);
 		}
+	}
+	
+	public static boolean avaliarReiCheck(int x, int y) {
+		ArrayPecas listaTemporaria = new ArrayPecas();
+		if ( corJogadorAtual==1 ) {
+			// Verificar Rei das peças Brancas
+			for (int j = 0; j < listaBrancas.size(); j++) {
+				listaTemporaria.add(listaBrancas.get(j));
+			}
+			for(int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j).posX==pecaMarcada.posX && listaTemporaria.get(j).posX==pecaMarcada.posY) {
+					listaTemporaria.get(j).posX=x;
+					listaTemporaria.get(j).posY=y;
+					break;
+				}
+			}
+			for (int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j) instanceof Rei) {
+					if(!(listaTemporaria.posicaoLivreAtaque(listaTemporaria.get(j).posX, listaTemporaria.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+			for (int j = 0; j < listaPretas.size(); j++) {
+				if(listaPretas.get(j) instanceof Rei) {
+					if(!(listaPretas.posicaoLivreAtaque(listaPretas.get(j).posX, listaPretas.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+		}else if(corJogadorAtual==0) {
+			// Verificar Rei das peças pretas
+			for (int j = 0; j < listaPretas.size(); j++) {
+				listaTemporaria.add(listaPretas.get(j));
+			}
+			for(int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j).posX==pecaMarcada.posX && listaTemporaria.get(j).posX==pecaMarcada.posY) {
+					listaTemporaria.get(j).posX=x;
+					listaTemporaria.get(j).posY=y;
+					break;
+				}
+			}
+			for (int j = 0; j < listaTemporaria.size(); j++) {
+				if(listaTemporaria.get(j) instanceof Rei) {
+					if(!(listaTemporaria.posicaoLivreAtaque(listaTemporaria.get(j).posX, listaTemporaria.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+			for (int j = 0; j < listaBrancas.size(); j++) {
+				if(listaBrancas.get(j) instanceof Rei) {
+					if(!(listaBrancas.posicaoLivreAtaque(listaBrancas.get(j).posX, listaBrancas.get(j).posY))) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public static void marcarPeca(Peca p, IPeca ip) {
 		if (iPecaMarcada != null)
 			iPecaMarcada.desmarcar();
-		    pecaMarcada = p;
-		    iPecaMarcada = ip;
-		    iPecaMarcada.marcar();
+		pecaMarcada = p;
+		iPecaMarcada = ip;
+		iPecaMarcada.marcar();
 	}
 
 	public static void capturarPeca(Peca p, IPeca ip) {
@@ -439,5 +497,57 @@ public class Tabuleiro {
 			else
 				corJogadorAtual = Xadrez.corBRANCA;
 		}
+	}
+	
+	public boolean caminhoLivre(char direcao, int indice, int posInicial, int posFinal) {
+		
+		// Inverte a posição inicial com final se inicial for maior. Isso garante o bom funcionamento do laço de repetição 'for'
+		if(posInicial > posFinal) {
+			int aux = posInicial;
+			posInicial = posFinal;
+			posFinal = aux;
+		}
+		
+		// Para cada casa entre a posição inicial e final ao longo da linha, ou coluna, onde o movimento for realizado
+		// será verificado se alguma peça do tabuleiro está ocupando aquele lugar, caso esteja, retorna 'false' (caminho não está livre)
+		if(direcao == 'v' || direcao == 'V') {	//	Direção do movimento é vertical
+			for(int i = posInicial + 1; i < posFinal; i++) {
+				
+				// Verificar peças brancas no caminho
+				for (int j = 0; j < listaBrancas.size(); j++) {
+					if(listaBrancas.get(j).posX == indice && listaBrancas.get(j).posY == i) {
+						return false;
+					}
+				}
+				
+				// Verificar peças pretas no caminho
+				for (int j = 0; j < listaPretas.size(); j++) {
+					if(listaPretas.get(j).posX == indice && listaPretas.get(j).posY == i) {
+						return false;
+					}
+				}
+			}
+		}else if(direcao == 'h' || direcao == 'H'){		//	Direção do movimento é horizontal
+			for(int i = posInicial + 1; i < posFinal; i++) {
+				
+				// Verificar peças brancas no caminho
+				for (int j = 0; j < listaBrancas.size(); j++) {
+					if(listaBrancas.get(j).posY == indice && listaBrancas.get(j).posX == i) {
+						return false;
+					}
+				}
+				
+				// Verificar peças pretas no caminho
+				for (int j = 0; j < listaPretas.size(); j++) {
+					if(listaPretas.get(j).posY == indice && listaPretas.get(j).posX == i) {
+						return false;
+					}
+				}
+			}
+		}else{
+			System.out.println("Erro na chamada do método: precisa informar 'v' para moviemnto vertical e 'h' para movimento horizontal.");
+		}
+		
+		return true;	// Caso não tenha dado nenhum conflito com peças no caminho da peça movida, retorna 'true'(caminho está livre)
 	}
 }
